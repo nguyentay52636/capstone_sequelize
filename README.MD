@@ -24,6 +24,7 @@ http://localhost:8080/images/search-by-name/taydeptrai
 <!-- + GET thông tin ảnh và người tạo ảnh bằng id ảnh -->
 
 http://localhost:8080/images/get-user-by-image/1
+
 http://localhost:8080/images/get-image-details/1
 
 <!-- GET thông tin bình luận theo id ảnh. -->
@@ -45,9 +46,13 @@ http://localhost:8080/images/get-comment-by-image/1
 <!-- + POST để lưu thông tin bình luận của người dùng với hình ảnh -->
 
 http://localhost:8080/images/save-comment
+
 -Trang quản lý ảnh :
+
 http://localhost:8080/auth/get-data-user-details
+
 http://localhost:8080/auth/get-save-image-by-user
+
 http://localhost:8080/auth/get-create-image-by-user
 
 <!-- upload hinh ah user -->
