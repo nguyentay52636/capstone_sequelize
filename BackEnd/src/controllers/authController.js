@@ -138,33 +138,38 @@ const getCreateImageByUserId = async (req, res) => {
 	}
 };
 
-const deleteImageByUserId = async (req, res) => {
+const deleteImageByImageId = async (req, res) => {
 	let { imageId } = req.params;
+
 	let { token } = req.headers;
+
 	let decoded = dataToken(token);
-	let userId = decoded.userId;
-	console.log(userId);
-	try {
-		let dataImage = await model.hinh_anh.findOne({
-			where: {
-				hinh_id: imageId,
-				nguoi_dung_id: userId,
-			},
-		});
-		console.log(dataImage);
-		if (dataImage) {
-			let data = await model.hinh_anh.destroy({
+	let userId;
+	if (decoded && decoded.userId) {
+		userId = decoded.userId;
+
+		console.log(userId);
+		try {
+			let dataImage = await model.hinh_anh.findOne({
 				where: {
 					hinh_id: imageId,
-					nguoi_dung_id: userId,
 				},
 			});
-			return requestApi(res, 200, data, 'delete image by userId success');
-		} else {
-			return requestApi(res, 404, '', 'not found image');
+			console.log(dataImage.dataValues.hinh_id);
+			if (dataImage) {
+				let data = await model.hinh_anh.destroy({
+					where: {
+						hinh_id: imageId,
+					},
+				});
+				console.log(data);
+				return responseApi(res, 200, data, 'delete image by userId success');
+			} else {
+				return responseApi(res, 404, '', 'not found image');
+			}
+		} catch (error) {
+			return responseApi(res, 500, '', 'Lỗi...');
 		}
-	} catch (error) {
-		return responseApi(res, 500, '', 'Lỗi...');
 	}
 };
 let updateInfoUser = async (req, res) => {
@@ -218,6 +223,6 @@ export {
 	signUp,
 	getDataUserDetails,
 	getCreateImageByUserId,
-	deleteImageByUserId,
+	deleteImageByImageId,
 	updateInfoUser,
 };
