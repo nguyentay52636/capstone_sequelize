@@ -1,66 +1,103 @@
-<!-- getuser -->
+# Swagger Documentation
 
--Đăng ký và đăng nhập :
+## Cấu trúc thư mục
 
-http://localhost:8080/auth/login
-http://localhost:8080/auth/signup
+```
+swagger/
+├── README.md           # File hướng dẫn này
+├── swagger.js          # Cấu hình chính của Swagger
+├── property.swagger.js # Documentation cho Property API
+└── index.js           # File trống (có thể xóa)
+```
 
-<!-- get saver image by userID -->
+## Cách tổ chức
 
-http://localhost:8080/auth/get-saved-image-by-user/1
+### 1. Tách Swagger Documentation
+- Tất cả các comment `@swagger` được tách ra khỏi file routes
+- Mỗi module API sẽ có file `.swagger.js` riêng
+- Ví dụ: `property.swagger.js` cho Property API
 
--Trang chủ :
+### 2. Cấu hình Swagger
+File `swagger.js` chứa cấu hình chính:
+```javascript
+const options = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Property API',
+      version: '1.0.0',
+      description: 'Swagger tài liệu API cho hệ thống quản lý bất động sản',
+    },
+    servers: [
+      {
+        url: 'http://localhost:8000', 
+      },
+    ],
+  },
+  apis: ['./swagger/*.swagger.js'], // Đọc từ các file swagger riêng
+};
+```
 
-<!-- get list image  -->
+### 3. Thêm API mới
+Khi thêm API mới, tạo file `.swagger.js` tương ứng:
 
-http://localhost:8080/images/get-list-image
+1. Tạo file `[module-name].swagger.js` trong thư mục `swagger/`
+2. Định nghĩa schema và endpoints trong file đó
+3. Swagger sẽ tự động đọc tất cả file `.swagger.js`
 
- <!-- GET tìm kiếm danh sách ảnh theo tên -->
+### 4. Truy cập Swagger
+- **Swagger UI**: http://localhost:8000/v1/swagger/
+- **Swagger JSON**: http://localhost:8000/v1/swagger.json
 
-http://localhost:8080/images/search-by-name/taydeptrai
+## Lợi ích
 
-<!-- getuser -->
+1. **Tách biệt**: Documentation tách khỏi logic routing
+2. **Dễ quản lý**: Mỗi module có file documentation riêng
+3. **Dễ bảo trì**: Không cần sửa file routes khi cập nhật documentation
+4. **Tổ chức tốt**: Cấu trúc rõ ràng, dễ tìm kiếm
 
--Trang chi tiết :
+## Ví dụ tạo file mới
 
-<!-- + GET thông tin ảnh và người tạo ảnh bằng id ảnh -->
+Để thêm documentation cho User API, tạo file `user.swagger.js`:
 
-http://localhost:8080/images/get-user-by-image/1
+```javascript
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     User:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *         email:
+ *           type: string
+ *         name:
+ *           type: string
+ */
 
-http://localhost:8080/images/get-image-details/1
-
-<!-- GET thông tin bình luận theo id ảnh. -->
-
-<!-- get image detail by imageID -->
-
-http://localhost:8080/images/get-image-details/2
-
-<!-- get info user  detail by imageID -->
-
-http://localhost:8080/images/get-user-by-image/1
-
-<!-- + GET thông tin bình luận theo id ảnh. -->
-
-http://localhost:8080/images/get-comment-by-image/1
-
-<!-- + GET thông tin đã lưu hình này chưa theo id ảnh (dùng để kiểm tra ảnh đã lưu hay chưa ở nút Save). -->
-
-<!-- + POST để lưu thông tin bình luận của người dùng với hình ảnh -->
-
-http://localhost:8080/images/save-comment
-
--Trang quản lý ảnh :
-
-http://localhost:8080/auth/get-data-user-details
-
-http://localhost:8080/auth/get-save-image-by-user
-
-http://localhost:8080/auth/get-create-image-by-user
-
-<!-- upload hinh ah user -->
-
-http://localhost:8080/auth/upload-image
-
-<!-- cap nhap thong tin user -->
-
-http://localhost:8080/auth/update-info-user
+/**
+ * @swagger
+ * /api/user/login:
+ *   post:
+ *     summary: Đăng nhập user
+ *     tags: [User]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Đăng nhập thành công
+ */
+``` 
